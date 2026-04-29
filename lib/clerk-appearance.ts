@@ -1,0 +1,37 @@
+export const beaverClerkAppearance = {
+  variables: {
+    colorPrimary: "#0A84FF",
+    colorBackground: "#0B0B0D",
+    colorText: "#F5F5F7",
+    colorTextSecondary: "#8A8A93",
+    colorInputBackground: "#141416",
+    colorInputText: "#F5F5F7",
+    colorNeutral: "#F5F5F7",
+    colorDanger: "#FF453A",
+    colorSuccess: "#30D158",
+    colorWarning: "#FF9F0A",
+    borderRadius: "14px",
+    fontFamily:
+      'var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif',
+  },
+  elements: {
+    rootBox: "text-text",
+    card: "bg-surface border border-border shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]",
+    headerTitle: "text-text font-bold tracking-tight",
+    headerSubtitle: "text-text-muted",
+    socialButtonsBlockButton: "bg-surface-2 border-border text-text hover:bg-surface-3",
+    socialButtonsBlockButtonText: "text-text font-medium",
+    formFieldLabel: "text-text-dim text-[12px] uppercase tracking-[0.12em]",
+    formFieldInput: "bg-surface-2 border-border text-text focus:border-accent",
+    formButtonPrimary:
+      "bg-accent hover:bg-accent-hover text-white font-semibold tracking-tight",
+    footerActionLink: "text-accent hover:underline",
+    identityPreviewEditButton: "text-accent",
+    dividerLine: "bg-border",
+    dividerText: "text-text-dim",
+    userButtonPopoverCard: "bg-surface border border-border",
+    userButtonPopoverActionButton: "text-text hover:bg-surface-2",
+    userButtonPopoverActionButtonText: "text-text",
+    userButtonPopoverFooter: "hidden",
+  },
+} as const;

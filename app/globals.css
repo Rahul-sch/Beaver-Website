@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #000000;
+  --color-surface: #0b0b0d;
+  --color-surface-2: #141416;
+  --color-surface-3: #1a1a1d;
+  --color-border: #1f2024;
+  --color-border-strong: #2a2b30;
+  --color-text: #f5f5f7;
+  --color-text-muted: #8a8a93;
+  --color-text-dim: #5a5a62;
+  --color-accent: #0a84ff;
+  --color-accent-hover: #3d9dff;
+  --color-accent-soft: rgba(10, 132, 255, 0.15);
+  --color-success: #30d158;
+  --color-warn: #ff9f0a;
+
+  --radius-card: 20px;
+  --radius-tile: 14px;
+  --radius-pill: 9999px;
+
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+
+  --shadow-glow: 0 0 0 1px rgba(10, 132, 255, 0.35), 0 12px 40px -12px rgba(10, 132, 255, 0.45);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.6);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  background: #000;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* Faint top-center radial backdrop */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10% 0 auto 0;
+  height: 80vh;
+  background:
+    radial-gradient(60% 60% at 50% 0%, rgba(10, 132, 255, 0.18) 0%, rgba(10, 132, 255, 0) 65%),
+    radial-gradient(40% 40% at 80% 10%, rgba(10, 132, 255, 0.08) 0%, rgba(10, 132, 255, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Thin dark scrollbar inside the demo phone */
+.phone-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2b30 transparent;
+}
+.phone-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.phone-scroll::-webkit-scrollbar-thumb {
+  background: #2a2b30;
+  border-radius: 9999px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
