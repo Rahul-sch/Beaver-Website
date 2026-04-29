@@ -22,7 +22,7 @@ export default function FullscreenDemo() {
         style={{ filter: "drop-shadow(0 30px 80px rgba(10,132,255,0.30))" }}
       >
         <PhoneFrame width={360}>
-          <DemoApp />
+          <DemoApp showSplash={false} />
         </PhoneFrame>
       </div>
       <div className="flex items-center gap-4">

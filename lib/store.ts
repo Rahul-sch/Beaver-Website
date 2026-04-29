@@ -169,9 +169,20 @@ export const useDemoStore = create<DemoState & DemoActions>()(
       },
     }),
     {
-      name: "beaver-demo-v2",
+      // Bumped to v3 so any browser that hit an earlier schema (missing
+      // damStats / groups / groupActivity / selectedScreenTimeDay) gets
+      // a clean reseed instead of crashing the Progress and Activity tabs.
+      name: "beaver-demo-v3",
       storage: createJSONStorage(() => localStorage),
-      version: 2,
+      version: 3,
+      // Defensive merge: pull in seed defaults for any keys the persisted
+      // state is missing, so a partial save can never produce undefined fields.
+      merge: (persistedState, currentState) => {
+        if (!persistedState || typeof persistedState !== "object") {
+          return currentState;
+        }
+        return { ...currentState, ...(persistedState as object) } as typeof currentState;
+      },
     }
   )
 );
