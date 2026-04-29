@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { makeSeed } from "./seed";
-import type { DemoState, ID, ListsTab, TabKey } from "./types";
+import type { DemoState, ID, ListsTab, ScreenTimeDay, TabKey } from "./types";
 
 interface DemoActions {
   setUserFromClerk: (input: {
@@ -17,6 +17,7 @@ interface DemoActions {
   setActiveTab: (t: TabKey) => void;
   setListsTab: (t: ListsTab) => void;
   toggleExpand: (listId: ID) => void;
+  setSelectedScreenTimeDay: (d: ScreenTimeDay["day"]) => void;
 
   toggleTask: (taskId: ID) => void;
   addTask: (listId: ID, title: string) => void;
@@ -35,7 +36,7 @@ const initialState: DemoState = {
   ...initialSeed,
   activeTab: "tasks",
   listsTab: "lists",
-  expandedListId: "list-trading",
+  expandedListId: "list-beaver",
 };
 
 export const useDemoStore = create<DemoState & DemoActions>()(
@@ -60,6 +61,7 @@ export const useDemoStore = create<DemoState & DemoActions>()(
       setListsTab: (t) => set({ listsTab: t }),
       toggleExpand: (listId) =>
         set((s) => ({ expandedListId: s.expandedListId === listId ? null : listId })),
+      setSelectedScreenTimeDay: (d) => set({ selectedScreenTimeDay: d }),
 
       toggleTask: (taskId) => {
         const t = get().tasks.find((x) => x.id === taskId);
@@ -75,7 +77,10 @@ export const useDemoStore = create<DemoState & DemoActions>()(
           // After animation, send to bottom
           setTimeout(() => {
             set((s) => {
-              const max = Math.max(0, ...s.tasks.filter((x) => x.listId === t.listId).map((x) => x.order));
+              const max = Math.max(
+                0,
+                ...s.tasks.filter((x) => x.listId === t.listId).map((x) => x.order)
+              );
               return {
                 tasks: s.tasks.map((x) =>
                   x.id === taskId ? { ...x, order: max + 1 } : x
@@ -86,7 +91,9 @@ export const useDemoStore = create<DemoState & DemoActions>()(
         } else {
           set((s) => ({
             tasks: s.tasks.map((x) =>
-              x.id === taskId ? { ...x, done: false, completedAt: undefined } : x
+              x.id === taskId
+                ? { ...x, done: false, completedAt: undefined }
+                : x
             ),
           }));
         }
@@ -97,7 +104,10 @@ export const useDemoStore = create<DemoState & DemoActions>()(
         if (!trimmed) return;
         const id = `t-${Math.random().toString(36).slice(2, 9)}`;
         set((s) => {
-          const max = Math.max(-1, ...s.tasks.filter((t) => t.listId === listId).map((t) => t.order));
+          const max = Math.max(
+            -1,
+            ...s.tasks.filter((t) => t.listId === listId).map((t) => t.order)
+          );
           return {
             tasks: [
               ...s.tasks,
@@ -138,7 +148,9 @@ export const useDemoStore = create<DemoState & DemoActions>()(
       acceptFriend: (friendId) =>
         set((s) => ({
           friends: s.friends.map((f) =>
-            f.id === friendId ? { ...f, status: "friend", trusted: true, streak: 0 } : f
+            f.id === friendId
+              ? { ...f, status: "friend", trusted: true, streak: 0 }
+              : f
           ),
         })),
 
@@ -152,15 +164,14 @@ export const useDemoStore = create<DemoState & DemoActions>()(
           ...fresh,
           activeTab: "tasks",
           listsTab: "lists",
-          expandedListId: "list-trading",
+          expandedListId: "list-beaver",
         });
       },
     }),
     {
-      name: "beaver-demo-v1",
+      name: "beaver-demo-v2",
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
     }
   )
 );
-

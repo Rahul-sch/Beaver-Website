@@ -1,142 +1,215 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useDemoStore } from "@/lib/store";
-import { RingStat } from "./RingStat";
 import { easeOutExpo } from "@/lib/motion";
-import { useMemo } from "react";
+import type { DamState, ScreenTimeDay } from "@/lib/types";
+import { DamProgressBar } from "./DamProgressBar";
 
 export function ProgressView() {
-  const tasks = useDemoStore((s) => s.tasks);
   const lists = useDemoStore((s) => s.lists);
+  const tasks = useDemoStore((s) => s.tasks);
   const screenTime = useDemoStore((s) => s.screenTime);
-  const blocked = useDemoStore((s) => s.blockedApps);
+  const selectedDay = useDemoStore((s) => s.selectedScreenTimeDay);
+  const setSelectedDay = useDemoStore((s) => s.setSelectedScreenTimeDay);
+  const damStats = useDemoStore((s) => s.damStats);
 
-  const { total, done, pct, dueToday, completedToday } = useMemo(() => {
-    const total = tasks.length;
-    const done = tasks.filter((t) => t.done).length;
-    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-    const dueToday = tasks.filter((t) => !t.done).length;
-    const completedToday = tasks.filter(
-      (t) =>
-        t.done &&
-        t.completedAt &&
-        Date.now() - t.completedAt < 24 * 60 * 60 * 1000
-    ).length;
-    return { total, done, pct, dueToday, completedToday };
-  }, [tasks]);
+  const personalListIds = useMemo(
+    () => new Set(lists.filter((l) => !l.isGroup).map((l) => l.id)),
+    [lists]
+  );
+
+  const { total, done, pctBuilt, damPts, state } = useMemo(() => {
+    const personal = tasks.filter((t) => personalListIds.has(t.listId));
+    const total = personal.length;
+    const done = personal.filter((t) => t.done).length;
+    const pctBuilt = total === 0 ? 0 : Math.round((done / total) * 100);
+    const damPts = done * 10;
+    const state: DamState =
+      pctBuilt === 0 ? "leaky" : pctBuilt >= 100 ? "perfect" : "solid";
+    return { total, done, pctBuilt, damPts, state };
+  }, [tasks, personalListIds]);
+
+  const stateLabel = state === "leaky" ? "Leaky" : state === "perfect" ? "Perfect" : "Solid";
+  const stateChip =
+    state === "leaky"
+      ? "bg-warn/15 text-warn"
+      : state === "perfect"
+        ? "bg-[#BF5AF2]/20 text-[#BF5AF2]"
+        : "bg-success/15 text-success";
+
+  const selectedDayApps =
+    screenTime.find((d) => d.day === selectedDay)?.topApps ?? [];
 
   return (
     <div className="h-full pb-28">
       <div className="px-5 pt-2">
         <div className="flex items-center justify-between">
           <h1 className="text-[26px] font-extrabold tracking-tight">Progress</h1>
-          <span className="rounded-pill bg-surface-3 px-2.5 py-1 text-[11px] font-semibold text-text-muted">Free</span>
+          <span className="rounded-pill bg-surface-3 px-2.5 py-1 text-[11px] font-semibold text-text-muted">
+            Free
+          </span>
         </div>
       </div>
 
       <div className="mt-4 flex flex-col gap-3 px-4">
-        {/* Today card */}
+        {/* Today's Dam */}
         <div className="rounded-card border border-border bg-surface p-4">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-[20px] font-bold tracking-tight">Today</h2>
+              <h2 className="text-[20px] font-bold tracking-tight">Today&apos;s Dam</h2>
               <p className="text-[12px] text-text-dim">{formatDate()}</p>
             </div>
-            <RingStat pct={pct} />
+            <div className="text-right">
+              <p className="flex items-center justify-end gap-1 text-[20px] font-extrabold tracking-tight">
+                <BoltIcon />
+                <CountUp to={damPts} />
+              </p>
+              <p className="text-[11px] text-text-dim">dam pts</p>
+            </div>
           </div>
-          <div className="mt-3 h-px bg-border" />
-          <p className="mt-3 text-[13px] text-text-muted">
-            {done} of {total} tasks completed
-          </p>
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            <StatTile label="Tasks" value={`${done}/${total}`} icon={<TasksIcon />} />
-            <StatTile label="Due Today" value={`${dueToday}/${total}`} icon={<ClockIcon />} />
-            <StatTile label="Lists" value={`${lists.length}`} icon={<ListsIcon />} />
+
+          <div className="mt-3 flex items-center justify-between">
+            <p className="text-[13px] font-semibold text-text">
+              <CountUp to={pctBuilt} />% built
+            </p>
+            <span
+              className={`rounded-pill px-2.5 py-1 text-[11px] font-bold ${stateChip}`}
+            >
+              {stateLabel}
+            </span>
+          </div>
+          <p className="mt-2 text-[12px] text-text-dim">dam progress</p>
+          <div className="mt-2">
+            <DamProgressBar pct={pctBuilt} state={state} />
+          </div>
+
+          <div className="mt-4 grid grid-cols-4 gap-2">
+            <DeltaTile icon={<TasksIcon />} value={`+${damStats.delta.tasks}`} label="Tasks" />
+            <DeltaTile icon={<PercentIcon />} value={`+${damStats.delta.completionPct}%`} label="Completion" />
+            <DeltaTile icon={<PhoneIcon />} value={`+${damStats.delta.screen}`} label="Screen" />
+            <DeltaTile icon={<FlameIcon />} value={`${damStats.streakMultiplier.toFixed(1)}x`} label="Streak" />
+          </div>
+
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            <BigStreak value={damStats.dayStreak} />
+            <SmallStat icon={<TasksIcon />} label="Tasks" value={`${done}/${total}`} />
+            <SmallStat icon={<DamIcon />} label="Perfect Dams" value={`${damStats.perfectDams}`} />
+            <SmallStat icon={<WarnIcon />} label="Overdue" value={`${damStats.overdue}`} />
           </div>
         </div>
 
         {/* Screen Time */}
         <div className="rounded-card border border-border bg-surface p-4">
           <h3 className="text-[18px] font-bold">Screen Time</h3>
-          <p className="text-[12px] text-text-muted">Total weekly usage with top 3 apps per day.</p>
-          <ScreenTimeChart days={screenTime} />
-          <div className="mt-4 rounded-tile bg-surface-2 p-3">
-            <p className="text-[13px] font-semibold text-text">Monday top apps</p>
-            <ul className="mt-1.5 space-y-1">
-              {(screenTime[0]?.topApps ?? []).slice(0, 3).map((a) => (
-                <li key={a.name} className="flex items-center justify-between text-[13px]">
-                  <span className="text-text">{a.name}</span>
-                  <span className="text-text-muted">{a.minutes}m</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Highlights */}
-        <div className="rounded-card border border-border bg-surface p-4">
-          <h3 className="text-[18px] font-bold">Highlights</h3>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <Highlight label="Completed Today" value={`${completedToday}/${total}`} />
-            <Highlight label="Overdue" value="0" />
-            <Highlight label="Active Lists" value={`${lists.length}`} />
-            <Highlight label="" value="No overdue tasks right now." muted />
-          </div>
-        </div>
-
-        {/* Blocked apps */}
-        <div className="rounded-card border border-border bg-surface p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-[18px] font-bold">Blocked Apps</h3>
-            <span className="text-[12px] text-text-dim">{blocked.length}</span>
-          </div>
-          <p className="mt-1 text-[12px] text-text-muted">
-            Tap an app to view its list, allow a 15-minute override, or reblock immediately.
+          <p className="text-[12px] text-text-muted">
+            Total weekly usage with top 3 apps per day.
           </p>
-          <div className="mt-3 flex items-center justify-center rounded-tile bg-surface-2 px-4 py-4 text-[13px] text-text-muted">
-            <BellOff className="mr-2 text-text-dim" />
-            No apps are currently blocked.
-          </div>
+          <ScreenTimeChart
+            days={screenTime}
+            selected={selectedDay}
+            onSelect={setSelectedDay}
+          />
+          {selectedDayApps.length > 0 && (
+            <div className="mt-4 rounded-tile bg-surface-2 p-3">
+              <p className="text-[13px] font-semibold text-text">
+                {dayFullName(selectedDay)}&apos;s top apps
+              </p>
+              <ul className="mt-1.5 space-y-1">
+                {selectedDayApps.slice(0, 3).map((a) => (
+                  <li key={a.name} className="flex items-center justify-between text-[13px]">
+                    <span className="text-text">{a.name}</span>
+                    <span className="text-text-muted">{a.minutes}m</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function StatTile({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
+function CountUp({ to }: { to: number }) {
+  // Cheap "count up" — just renders the final value; the parent ring/stat already has the wow.
+  return <>{to}</>;
+}
+
+function DeltaTile({
+  icon,
+  value,
+  label,
+}: {
+  icon: React.ReactNode;
+  value: string;
+  label: string;
+}) {
   return (
-    <div className="rounded-tile bg-surface-2 px-3 py-2.5">
-      <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
-        <span className="text-text-muted">{icon}</span>
-        {label}
-      </div>
-      <div className="mt-1 text-[16px] font-bold tracking-tight text-text">{value}</div>
+    <div className="flex flex-col items-center rounded-tile bg-surface-2 px-1.5 py-2.5">
+      <span className="text-text-muted">{icon}</span>
+      <span className="mt-1 text-[15px] font-bold tracking-tight">{value}</span>
+      <span className="text-[10px] text-text-dim">{label}</span>
     </div>
   );
 }
 
-function Highlight({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
+function BigStreak({ value }: { value: number }) {
   return (
-    <div>
-      {label && <p className="text-[12px] text-text-muted">{label}</p>}
-      <p className={muted ? "text-[12px] text-text-dim" : "text-[18px] font-bold tracking-tight"}>{value}</p>
+    <div className="flex flex-col items-start justify-center rounded-tile px-1 py-2">
+      <span className="text-[28px] font-extrabold leading-none tracking-tight">
+        {value}
+      </span>
+      <span className="text-[10px] text-text-dim">day streak</span>
     </div>
   );
 }
 
-function ScreenTimeChart({ days }: { days: { day: string; minutes: number }[] }) {
+function SmallStat({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-tile bg-surface-2 px-2 py-2.5">
+      <span className="text-text-muted">{icon}</span>
+      <span className="mt-1 text-[15px] font-bold tracking-tight">{value}</span>
+      <span className="text-[10px] text-text-dim">{label}</span>
+    </div>
+  );
+}
+
+function ScreenTimeChart({
+  days,
+  selected,
+  onSelect,
+}: {
+  days: ScreenTimeDay[];
+  selected: ScreenTimeDay["day"];
+  onSelect: (d: ScreenTimeDay["day"]) => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
-  const max = Math.max(60, ...days.map((d) => d.minutes));
+  const max = Math.max(15, ...days.map((d) => d.minutes));
   return (
     <div ref={ref} className="mt-4 flex h-[110px] items-end gap-3">
       {days.map((d, i) => {
-        const h = Math.max(4, (d.minutes / max) * 100);
+        const h = d.minutes === 0 ? 4 : Math.max(8, (d.minutes / max) * 100);
+        const isSelected = selected === d.day;
         return (
-          <div key={d.day} className="flex flex-1 flex-col items-center gap-1.5">
-            <span className="text-[11px] text-text-muted">{d.minutes ? `${d.minutes}m` : ""}</span>
+          <button
+            key={d.day}
+            onClick={() => onSelect(d.day)}
+            className="flex flex-1 flex-col items-center gap-1.5"
+          >
+            <span className="text-[11px] text-text-muted">
+              {d.minutes ? `${d.minutes}m` : "0m"}
+            </span>
             <motion.div
               initial={{ scaleY: 0 }}
               animate={inView ? { scaleY: 1 } : { scaleY: 0 }}
@@ -148,51 +221,106 @@ function ScreenTimeChart({ days }: { days: { day: string; minutes: number }[] })
               style={{
                 height: `${h}%`,
                 transformOrigin: "bottom",
-                background: d.minutes > 0 ? "#0A84FF" : "#1F2024",
+                background:
+                  d.minutes > 0
+                    ? "#0A84FF"
+                    : isSelected
+                      ? "#1F2024"
+                      : "#1F2024",
+                opacity: d.minutes === 0 && !isSelected ? 0.5 : 1,
               }}
               className="w-full max-w-[18px] rounded-tile"
             />
-            <span className="text-[11px] text-text-muted">{d.day}</span>
-          </div>
+            <span
+              className={`text-[11px] ${
+                isSelected ? "font-semibold text-text" : "text-text-muted"
+              }`}
+            >
+              {d.day}
+            </span>
+          </button>
         );
       })}
     </div>
   );
 }
 
+function dayFullName(d: ScreenTimeDay["day"]) {
+  return (
+    {
+      M: "Monday",
+      T: "Tuesday",
+      W: "Wednesday",
+      Th: "Thursday",
+      F: "Friday",
+      Sa: "Saturday",
+      Su: "Sunday",
+    } as const
+  )[d];
+}
+
 function formatDate() {
   return new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
+function BoltIcon() {
+  return (
+    <svg width="14" height="16" viewBox="0 0 14 16" fill="#0A84FF" aria-hidden>
+      <path d="M8 1 L2 9 L6.5 9 L5 15 L12 6 L7.5 6 L8 1 Z" />
+    </svg>
+  );
+}
 function TasksIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M4 7.4 L6 9.4 L10 4.6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M4.5 7.4 L6.4 9.4 L9.6 5.2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
-function ClockIcon() {
+function PercentIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M7 4 V7 L9 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <line x1="3" y1="11" x2="11" y2="3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <circle cx="4" cy="4" r="1.4" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="10" cy="10" r="1.4" stroke="currentColor" strokeWidth="1.4" />
     </svg>
   );
 }
-function ListsIcon() {
+function PhoneIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-      <rect x="2" y="3" width="10" height="2" rx="0.7" stroke="currentColor" strokeWidth="1.2" />
-      <rect x="2" y="6.5" width="10" height="2" rx="0.7" stroke="currentColor" strokeWidth="1.2" />
-      <rect x="2" y="10" width="10" height="2" rx="0.7" stroke="currentColor" strokeWidth="1.2" />
+      <rect x="3.5" y="1.5" width="7" height="11" rx="1.4" stroke="currentColor" strokeWidth="1.4" />
+      <line x1="6" y1="10.5" x2="8" y2="10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
-function BellOff({ className }: { className?: string }) {
+function FlameIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className={className} aria-hidden>
-      <path d="M3 11 L11 11 M5 11 V7 a2 2 0 0 1 4 0 v4 M2 2 L12 12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <path
+        d="M7 13 c-3 0 -4.5 -2 -4.5 -4.5 c0 -2 2 -2.5 2 -5 c0 0 1.5 1.5 1.5 3 c0.7 -1.5 2 -2 2 -3.5 c1.5 1.5 3 4 3 6 c0 2 -1 4 -4 4 z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+function DamIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <path d="M2 11 L12 11 M3 11 L4 5 L7 4 L10 5 L11 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 6.5 L9 6.5 M5 8.5 L9 8.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+function WarnIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <path d="M7 1.5 L13 12 L1 12 L7 1.5 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+      <line x1="7" y1="6" x2="7" y2="9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <circle cx="7" cy="10.6" r="0.7" fill="currentColor" />
     </svg>
   );
 }

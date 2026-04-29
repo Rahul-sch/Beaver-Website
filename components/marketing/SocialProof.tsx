@@ -8,13 +8,13 @@ const quotes = [
   {
     name: "Anish S.",
     handle: "co-founder, Beaver",
-    quote: "I keep telling people Beaver is the only todo app I haven't deleted. The friends bit is the unlock.",
+    quote: "I keep telling people Beaver is the only todo app I haven't deleted. Live group lists are the unlock.",
     color: "#0A84FF",
   },
   {
     name: "Priya M.",
     handle: "ML engineer",
-    quote: "My streak is 21 days. My roommates' shared list got me to actually take out the trash. Witchcraft.",
+    quote: "Two perfect dams in a row and a 12-day streak. Beaver shamelessly turns chores into a game I want to win.",
     color: "#30D158",
   },
   {

@@ -1,6 +1,9 @@
 import type {
   BlockedApp,
+  DamStats,
   Friend,
+  Group,
+  GroupActivity,
   List,
   ScreenTimeDay,
   Task,
@@ -10,275 +13,205 @@ const now = () => Date.now();
 
 export const seedLists: List[] = [
   {
-    id: "list-trading",
-    name: "Trading work",
-    kind: "daily",
-    emoji: "📈",
-    isGroup: false,
-    memberIds: [],
-    ownerId: "u-self",
-    createdAt: now() - 1000 * 60 * 60 * 24 * 14,
-  },
-  {
     id: "list-beaver",
     name: "Beaver Tasks",
     kind: "daily",
-    emoji: "🦫",
     isGroup: false,
     memberIds: [],
     ownerId: "u-self",
     createdAt: now() - 1000 * 60 * 60 * 24 * 7,
   },
   {
-    id: "list-workout",
-    name: "Workouts",
-    kind: "weekly",
-    emoji: "💪",
+    id: "list-trading",
+    name: "Trading work",
+    kind: "daily",
     isGroup: false,
     memberIds: [],
     ownerId: "u-self",
-    createdAt: now() - 1000 * 60 * 60 * 24 * 30,
+    createdAt: now() - 1000 * 60 * 60 * 24 * 14,
+  },
+  // Lists that belong to the Beaver group (visible only via group drilldown)
+  {
+    id: "list-bug-tv",
+    name: "Bug list for TV",
+    kind: "once",
+    isGroup: true,
+    groupId: "group-beaver",
+    memberIds: ["u-self", "g-beaver-member"],
+    ownerId: "u-self",
+    createdAt: now() - 1000 * 60 * 60 * 24 * 2,
   },
   {
-    id: "list-roommates",
-    name: "Roommates",
-    kind: "weekly",
-    emoji: "🏠",
+    id: "list-suggestion",
+    name: "Suggestion",
+    kind: "once",
     isGroup: true,
-    memberIds: ["f-anish", "f-thiru", "u-self"],
+    groupId: "group-beaver",
+    memberIds: ["u-self", "g-beaver-member"],
     ownerId: "u-self",
-    createdAt: now() - 1000 * 60 * 60 * 24 * 21,
+    createdAt: now() - 1000 * 60 * 60 * 24 * 5,
   },
 ];
 
 export const seedTasks: Task[] = [
+  // Beaver Tasks — 6 tasks left (matching IMG_0860)
+  {
+    id: "t-bv-1",
+    listId: "list-beaver",
+    title: "Comment all code",
+    done: false,
+    createdAt: now() - 1000 * 60 * 60 * 3,
+    order: 0,
+  },
+  {
+    id: "t-bv-2",
+    listId: "list-beaver",
+    title: "Understand code base",
+    done: false,
+    createdAt: now() - 1000 * 60 * 60 * 3,
+    order: 1,
+  },
+  {
+    id: "t-bv-3",
+    listId: "list-beaver",
+    title:
+      "Fix the enter issue so you don't have to click enter again for it to get updated",
+    done: false,
+    createdAt: now() - 1000 * 60 * 60 * 3,
+    order: 2,
+  },
+  {
+    id: "t-bv-4",
+    listId: "list-beaver",
+    title: "Add assigning to the app",
+    done: false,
+    createdAt: now() - 1000 * 60 * 60 * 3,
+    order: 3,
+  },
+  {
+    id: "t-bv-5",
+    listId: "list-beaver",
+    title: "Make Claude design and setup/ make website",
+    done: false,
+    createdAt: now() - 1000 * 60 * 60 * 3,
+    order: 4,
+  },
+  {
+    id: "t-bv-6",
+    listId: "list-beaver",
+    title: "Add priority and sliding up and down animation",
+    done: false,
+    createdAt: now() - 1000 * 60 * 60 * 3,
+    order: 5,
+  },
+
   // Trading work — 1 task left
   {
-    id: "t-trading-1",
+    id: "t-tr-1",
     listId: "list-trading",
     title: "To look at notes",
     done: false,
     createdAt: now() - 1000 * 60 * 60 * 4,
     order: 0,
   },
-  {
-    id: "t-trading-2",
-    listId: "list-trading",
-    title: "Review pre-market movers",
-    done: true,
-    completedAt: now() - 1000 * 60 * 60 * 6,
-    createdAt: now() - 1000 * 60 * 60 * 8,
-    order: 1,
-  },
-  {
-    id: "t-trading-3",
-    listId: "list-trading",
-    title: "Update P&L journal",
-    done: true,
-    completedAt: now() - 1000 * 60 * 60 * 5,
-    createdAt: now() - 1000 * 60 * 60 * 8,
-    order: 2,
-  },
 
-  // Beaver Tasks — 6 tasks left
+  // Group lists (not displayed in main list view)
   {
-    id: "t-beaver-1",
-    listId: "list-beaver",
-    title: "Ship the new onboarding flow",
+    id: "t-bug-1",
+    listId: "list-bug-tv",
+    title: "Subtitles offset on AppleTV",
     done: false,
-    createdAt: now() - 1000 * 60 * 60 * 3,
+    createdAt: now() - 1000 * 60 * 60 * 24 * 2,
     order: 0,
   },
   {
-    id: "t-beaver-2",
-    listId: "list-beaver",
-    title: "Reply to feedback in TestFlight",
+    id: "t-bug-2",
+    listId: "list-bug-tv",
+    title: "Casting drops after sleep",
     done: false,
-    createdAt: now() - 1000 * 60 * 60 * 3,
+    createdAt: now() - 1000 * 60 * 60 * 24 * 2,
     order: 1,
   },
   {
-    id: "t-beaver-3",
-    listId: "list-beaver",
-    title: "Polish friend chip animations",
+    id: "t-sug-1",
+    listId: "list-suggestion",
+    title: "Add a widget for Today's Dam",
     done: false,
-    createdAt: now() - 1000 * 60 * 60 * 3,
-    order: 2,
-  },
-  {
-    id: "t-beaver-4",
-    listId: "list-beaver",
-    title: "Write copy for App Store",
-    done: false,
-    createdAt: now() - 1000 * 60 * 60 * 3,
-    order: 3,
-  },
-  {
-    id: "t-beaver-5",
-    listId: "list-beaver",
-    title: "Add streak emoji",
-    done: false,
-    createdAt: now() - 1000 * 60 * 60 * 3,
-    order: 4,
-  },
-  {
-    id: "t-beaver-6",
-    listId: "list-beaver",
-    title: "Push to waitlist",
-    done: false,
-    createdAt: now() - 1000 * 60 * 60 * 3,
-    order: 5,
-  },
-  {
-    id: "t-beaver-7",
-    listId: "list-beaver",
-    title: "Launch the marketing site",
-    done: true,
-    completedAt: now() - 1000 * 60 * 30,
-    createdAt: now() - 1000 * 60 * 60 * 24,
-    order: 6,
-  },
-
-  // Workouts
-  {
-    id: "t-w-1",
-    listId: "list-workout",
-    title: "Push day",
-    done: true,
-    completedAt: now() - 1000 * 60 * 60 * 24,
-    createdAt: now() - 1000 * 60 * 60 * 30,
+    createdAt: now() - 1000 * 60 * 60 * 24 * 5,
     order: 0,
-  },
-  {
-    id: "t-w-2",
-    listId: "list-workout",
-    title: "Pull day",
-    done: false,
-    createdAt: now() - 1000 * 60 * 60 * 24,
-    order: 1,
-  },
-  {
-    id: "t-w-3",
-    listId: "list-workout",
-    title: "Leg day",
-    done: false,
-    createdAt: now() - 1000 * 60 * 60 * 24,
-    order: 2,
-  },
-
-  // Roommates (group)
-  {
-    id: "t-r-1",
-    listId: "list-roommates",
-    title: "Take out trash",
-    done: true,
-    completedAt: now() - 1000 * 60 * 60 * 12,
-    createdAt: now() - 1000 * 60 * 60 * 48,
-    order: 0,
-  },
-  {
-    id: "t-r-2",
-    listId: "list-roommates",
-    title: "Restock kitchen",
-    done: false,
-    createdAt: now() - 1000 * 60 * 60 * 24,
-    order: 1,
-  },
-  {
-    id: "t-r-3",
-    listId: "list-roommates",
-    title: "Clean common area",
-    done: false,
-    createdAt: now() - 1000 * 60 * 60 * 24,
-    order: 2,
   },
 ];
 
-export const seedFriends: Friend[] = [
+export const seedGroups: Group[] = [
   {
-    id: "f-anish",
-    name: "Anishh S",
-    handle: "teambeaver@gmail.com",
-    avatarColor: "#0A84FF",
-    trusted: true,
-    status: "friend",
-    streak: 12,
-  },
-  {
-    id: "f-thiru",
-    name: "Thiruvasagam",
-    handle: "thiruvasagam@gmail.com",
-    avatarColor: "#C68A5A",
-    trusted: true,
-    status: "friend",
-    streak: 7,
-  },
-  {
-    id: "f-priya",
-    name: "Priya M",
-    handle: "priya.m@beaver.app",
-    avatarColor: "#30D158",
-    trusted: true,
-    status: "friend",
-    streak: 21,
-  },
-  {
-    id: "f-jay",
-    name: "Jay K",
-    handle: "jay.k@beaver.app",
-    avatarColor: "#FF9F0A",
-    trusted: true,
-    status: "friend",
-    streak: 3,
-  },
-  {
-    id: "f-sam",
-    name: "Sam R",
-    handle: "sam.r@beaver.app",
-    avatarColor: "#BF5AF2",
-    trusted: false,
-    status: "incoming",
-  },
-  {
-    id: "f-leo",
-    name: "Leo B",
-    handle: "leo.b@beaver.app",
-    avatarColor: "#FF453A",
-    trusted: false,
-    status: "incoming",
+    id: "group-beaver",
+    name: "Beaver",
+    role: "member",
+    listCount: 2,
   },
 ];
 
+export const seedGroupActivity: GroupActivity[] = [
+  {
+    id: "ga-1",
+    groupId: "group-beaver",
+    kind: "list-updated",
+    actorEmail: "rahul.bainsla2005@gmail.com",
+    target: "Bug list for TV",
+    agoLabel: "2h",
+  },
+  {
+    id: "ga-2",
+    groupId: "group-beaver",
+    kind: "list-updated",
+    actorEmail: "rahul.bainsla2005@gmail.com",
+    target: "Suggestion",
+    agoLabel: "2h",
+  },
+  {
+    id: "ga-3",
+    groupId: "group-beaver",
+    kind: "list-created",
+    actorEmail: "rahul.bainsla2005@gmail.com",
+    target: "Bug list for TV",
+    agoLabel: "2d",
+  },
+];
+
+// Empty trusted friends — matches "No friends yet" in IMG_0862
+export const seedFriends: Friend[] = [];
+
+// Wednesday-only usage with Beaver as the only top app — matches IMG_0863
 export const seedScreenTime: ScreenTimeDay[] = [
-  {
-    day: "M",
-    minutes: 123,
-    topApps: [
-      { name: "YouTube", minutes: 19 },
-      { name: "YouTube Music", minutes: 17 },
-      { name: "Messages", minutes: 14 },
-    ],
-  },
-  { day: "T", minutes: 16, topApps: [{ name: "Safari", minutes: 16 }] },
-  { day: "W", minutes: 0, topApps: [] },
+  { day: "M", minutes: 0, topApps: [] },
+  { day: "T", minutes: 0, topApps: [] },
+  { day: "W", minutes: 5, topApps: [{ name: "Beaver", minutes: 4 }] },
   { day: "Th", minutes: 0, topApps: [] },
   { day: "F", minutes: 0, topApps: [] },
   { day: "Sa", minutes: 0, topApps: [] },
   { day: "Su", minutes: 0, topApps: [] },
 ];
 
-export const seedBlockedApps: BlockedApp[] = [
-  { name: "Instagram", iconKey: "instagram" },
-  { name: "TikTok", iconKey: "tiktok" },
-  { name: "X", iconKey: "x" },
-];
+export const seedBlockedApps: BlockedApp[] = [];
+
+export const seedDamStats: DamStats = {
+  dayStreak: 0,
+  perfectDams: 0,
+  overdue: 0,
+  streakMultiplier: 1.0,
+  delta: { tasks: 0, completionPct: 0, screen: 0 },
+};
 
 export function makeSeed() {
   return {
     lists: seedLists.map((l) => ({ ...l })),
     tasks: seedTasks.map((t) => ({ ...t })),
+    groups: seedGroups.map((g) => ({ ...g })),
+    groupActivity: seedGroupActivity.map((a) => ({ ...a })),
     friends: seedFriends.map((f) => ({ ...f })),
     screenTime: seedScreenTime.map((s) => ({ ...s })),
+    selectedScreenTimeDay: "W" as const,
     blockedApps: seedBlockedApps.map((b) => ({ ...b })),
+    damStats: { ...seedDamStats },
   };
 }

@@ -6,33 +6,33 @@ import { motion } from "framer-motion";
 
 const features = [
   {
-    title: "Shared lists",
-    body: "Group lists for chores, projects, and habits. Beavers tackle them together.",
+    title: "Live group lists",
+    body: "Real-time lists you share with a group. Cross out a task and everyone sees it move.",
     icon: ListIcon,
   },
   {
-    title: "Streaks",
-    body: "Watch your daily streak climb. Watch your friends' too. Don't break the chain.",
+    title: "Today's Dam",
+    body: "Every task is a log. Build to Perfect, climb dam pts, keep the streak alive.",
     icon: StreakIcon,
   },
   {
-    title: "Cheering",
-    body: "When a friend finishes, you can react. A small spark goes a long way.",
+    title: "Auto Check & Remind",
+    body: "Beaver auto-checks habits the moment they're done and remembers to ping you when they aren't.",
     icon: HeartIcon,
   },
   {
-    title: "Call-outs",
-    body: "If you slip, your trusted circle gets a tasteful nudge. (You signed up for this.)",
+    title: "Notify Members",
+    body: "Group members hear about updates instantly. Recent Activity feed keeps the dam transparent.",
     icon: BellIcon,
   },
   {
     title: "Screen Time",
-    body: "See where your day actually went. Beaver pairs the carrot with a gentle stick.",
+    body: "Weekly bars + top apps per day. Tap a day to see where it actually went.",
     icon: ChartIcon,
   },
   {
     title: "Blocked Apps",
-    body: "Block apps that pull you off-track. Allow a 15-minute override when you need to.",
+    body: "Block what pulls you off-task. Tap an app to request an unblock — your trusted friends decide.",
     icon: ShieldIcon,
   },
 ];
@@ -42,13 +42,13 @@ export function FeaturesGrid() {
     <Section id="friends" className="py-24 md:py-32">
       <Reveal>
         <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent">
-          Built for circles
+          What&apos;s in the dam
         </p>
         <h2 className="mt-2 max-w-2xl text-[36px] font-extrabold leading-tight tracking-tight md:text-[52px]">
-          Productivity is a team sport.
+          Solo lists are fine. Group dams hit different.
         </h2>
         <p className="mt-4 max-w-xl text-[15px] text-text-muted md:text-[17px]">
-          Solo lists are great. Lists with people who hold you accountable are different.
+          The full feature set, packed into one little app.
         </p>
       </Reveal>
       <div className="mt-12 grid gap-3 md:grid-cols-3">

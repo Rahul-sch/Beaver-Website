@@ -21,10 +21,10 @@ export function ClosingCTA() {
               <BeaverGlyph size={36} stroke="white" />
             </span>
             <h2 className="mt-6 text-[32px] font-extrabold leading-tight tracking-tight md:text-[44px]">
-              Ready to do better?
+              Build a Perfect Dam.
             </h2>
             <p className="mt-3 text-[15px] text-text-muted md:text-[17px]">
-              Join 2,400+ beavers waiting to ship the gym, the laundry, and the side project — together.
+              Join 2,400+ beavers waiting to turn the gym, the laundry, and the side project into a streak they don&apos;t want to break.
             </p>
             <div className="mx-auto mt-8 max-w-md">
               <WaitlistForm />

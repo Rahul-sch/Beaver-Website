@@ -9,23 +9,31 @@ import { easeStandard } from "@/lib/motion";
 const faqs = [
   {
     q: "Wait — what is Beaver, exactly?",
-    a: "A todo app that's social by default. Make daily lists. Pick a few trusted friends. They see your streaks, cheer your wins, and call you out when you slip.",
+    a: "A todo app that turns your day into a dam you build with friends. Personal lists for solo work, live group lists for shared stuff, plus a Today's Dam screen that scores you on completion, streak, and screen time.",
+  },
+  {
+    q: "What's the difference between a list and a group?",
+    a: "Lists are personal — only you see them. Groups have multiple members, contain multiple live lists, and share a Recent Activity feed so everyone can see what got updated.",
+  },
+  {
+    q: "What does \"Today's Dam\" do?",
+    a: "It's your daily score. Each completed personal task is a log on the dam — % built climbs, dam pts go up, and the day flips from Leaky → Solid → Perfect. Strings of perfect days are tracked as Perfect Dams.",
   },
   {
     q: "Is this just a hype waitlist?",
     a: "Nope. The iOS app is in TestFlight and launching publicly soon. Join the waitlist and we'll send you an invite when your spot opens.",
   },
   {
-    q: "Will Beaver be available on Android / web?",
-    a: "iOS first. Android is on the roadmap. The web version of the app (beyond this demo) ships post-launch.",
-  },
-  {
-    q: "Can my friends see my whole list?",
-    a: "Only what you choose to share. Trusted friends see your streaks and the lists you opt in to. Private lists stay private.",
+    q: "What's Pro vs. Family?",
+    a: "Pro is $4.99/mo for one person — unlimited lists, unlimited live lists, groups, Auto Check, Remind, Notify Members, and Recent Activity. Family is $19.99/mo and bundles 5 full Pro accounts plus a pre-set family group with child screen time controls.",
   },
   {
     q: "How does Screen Time work?",
-    a: "Beaver uses Apple's Screen Time API on iOS. We never see what you watched — only categories and minutes, fully on-device.",
+    a: "Beaver uses Apple's Screen Time API on iOS. We never see what you watched — only categories and minutes, fully on-device. Tap any day in the bar chart to see that day's top apps.",
+  },
+  {
+    q: "Will Beaver be available on Android / web?",
+    a: "iOS first. Android is on the roadmap. The web version of the app (beyond this demo) ships post-launch.",
   },
 ];
 

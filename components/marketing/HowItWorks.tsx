@@ -14,20 +14,20 @@ const steps: { tab: TabKey; eyebrow: string; title: string; body: string }[] = [
   {
     tab: "tasks",
     eyebrow: "01 — Lists",
-    title: "Daily lists that actually move.",
-    body: "Make a list, add what matters, tick it off. Cross-out animations are weirdly satisfying. Your friends see what you finished — no more guessing if today was actually productive.",
+    title: "Daily lists. Live group lists.",
+    body: "Personal Beaver Tasks for what only you can do. Live lists inside groups for the things you do together — flatmates, co-founders, training partners. Tick a box, watch it cross out.",
   },
   {
     tab: "progress",
-    eyebrow: "02 — Progress",
-    title: "Streaks, not screenshots.",
-    body: "A real picture of where the day went: completed tasks, screen time, top apps, and where you slipped. Beaver pairs the carrot with a gentle stick.",
+    eyebrow: "02 — Today's Dam",
+    title: "Build your dam, day by day.",
+    body: "Every task is a log on the dam. Hit your list and the bar fills, dam pts climb, and your day goes from Leaky to Solid to Perfect. Streaks, screen time, and overdue all in one place.",
   },
   {
     tab: "activity",
-    eyebrow: "03 — Friends",
-    title: "Trusted friends in your corner.",
-    body: "Pick a tight circle. They cheer your wins, call you out when you ghost the gym, and quietly judge your screen time. You'd do the same for them.",
+    eyebrow: "03 — Activity",
+    title: "Trusted friends. No leaks.",
+    body: "Pick a tight circle of trusted friends. Block the apps that pull you off-track — tap to request unblock when you actually need them. Nothing leaks through unless you let it.",
   },
 ];
 

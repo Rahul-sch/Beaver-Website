@@ -73,7 +73,7 @@ export function Hero() {
               variants={wordVariants}
               className="max-w-[480px] text-[16px] leading-relaxed text-text-muted md:text-[17px]"
             >
-              Beaver turns your daily lists into a shared scoreboard. Trusted friends see your streaks, cheer your wins, and call you out when you slip.
+              Build your dam, one task at a time. Daily lists, live group lists, and trusted friends — together they turn your todos into a streak you don&apos;t want to break.
             </motion.p>
             <HeroCTAs />
             <motion.div
