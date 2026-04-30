@@ -2,7 +2,7 @@
 
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
-import { WaitlistForm } from "./WaitlistForm";
+import { AppStoreButton } from "@/components/ui/AppStoreButton";
 import { BeaverGlyph } from "@/components/ui/BeaverMark";
 
 export function ClosingCTA() {
@@ -24,10 +24,10 @@ export function ClosingCTA() {
               Build a Perfect Dam.
             </h2>
             <p className="mt-3 text-[15px] text-text-muted md:text-[17px]">
-              Join 2,400+ beavers waiting to turn the gym, the laundry, and the side project into a streak they don&apos;t want to break.
+              Join 2,400+ beavers turning the gym, the laundry, and the side project into a streak they don&apos;t want to break.
             </p>
-            <div className="mx-auto mt-8 max-w-md">
-              <WaitlistForm />
+            <div className="mx-auto mt-8 flex justify-center">
+              <AppStoreButton label="Join the waitlist" size="lg" />
             </div>
           </div>
         </div>

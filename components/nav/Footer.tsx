@@ -1,5 +1,5 @@
 import { BeaverMark } from "@/components/ui/BeaverMark";
-import { WaitlistForm } from "@/components/marketing/WaitlistForm";
+import { AppStoreButton } from "@/components/ui/AppStoreButton";
 
 export function Footer() {
   return (
@@ -27,10 +27,13 @@ export function Footer() {
         </div>
         <div>
           <h4 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-text-dim">
-            Join the waitlist
+            Get the app
           </h4>
+          <p className="mt-3 text-[13px] text-text-muted">
+            Beaver is live on the App Store. Tap below to start building your dam.
+          </p>
           <div className="mt-3">
-            <WaitlistForm compact />
+            <AppStoreButton label="Join the waitlist" size="sm" />
           </div>
         </div>
       </div>

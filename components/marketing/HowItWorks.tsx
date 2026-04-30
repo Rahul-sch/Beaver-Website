@@ -26,7 +26,7 @@ const steps: { tab: TabKey; eyebrow: string; title: string; body: string }[] = [
   {
     tab: "activity",
     eyebrow: "03 — Activity",
-    title: "Trusted friends. No leaks.",
+    title: "Closed friends. Holding them Accountable.",
     body: "Pick a tight circle of trusted friends. Block the apps that pull you off-track — tap to request unblock when you actually need them. Nothing leaks through unless you let it.",
   },
 ];
